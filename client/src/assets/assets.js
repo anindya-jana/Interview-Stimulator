@@ -19,7 +19,7 @@ import star_group from './star_group.png'
 import credit_star from './credit_star.svg'
 import profile_icon from './profile_icon.png'
 import user_icon from './user_icon.png'
-import my_logo from './soulsync.svg'
+import my_logo from './interviewverse.svg'
 import my_logo2 from './interviewverse.png'
 
 export const assets = {
