@@ -29,7 +29,7 @@ const Navbar = () => {
         </Link>
         
         {isGenerated && <button
-          onClick={() => navigate('/start-test')}
+          onClick={() => navigate('/test')}
           className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-full text-sm font-semibold transition duration-300"
         >
           Start Test

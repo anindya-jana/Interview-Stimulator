@@ -3,12 +3,18 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL
   const [pdfFile, setPdfFile] = useState(null);
   const [pdfName, setPdfName] = useState('');
+  const [showSubmit, setShowSubmit] = useState(false);
+  const [showTest, setShowTest] = useState(false);
+  const [processing, SetProcessing] = useState(false);
   const { setQAList, setIsGenerated} = useContext(AppContext);
+
+  const navigate = useNavigate()
 
   // Triggered on file selection
   const handleFileChange = (event) => {
@@ -16,12 +22,15 @@ const Header = () => {
     if (!file) return;
     setPdfFile(file);
     setPdfName(file.name);
+    setShowTest(false);
+    setShowSubmit(true);
   };
 
   // Triggered on submit button click
   const handlePDFUpload = async () => {
     if (!pdfFile) return;
-
+    setShowSubmit(false)
+    SetProcessing(true)
     const formData = new FormData();
     formData.append('pdf', pdfFile);
 
@@ -33,8 +42,17 @@ const Header = () => {
       });
 
       const data = res.data;
-      setQAList(data.qa_pairs);
-      setIsGenerated(true)
+
+      if (data.success) {
+        setQAList(data.qa_pairs);
+        console.log(data.qa_pairs);
+        SetProcessing(false);
+        setIsGenerated(true);
+        setShowTest(true);
+      } else {
+        toast.error(`Server Error: ${data.message}`);
+        SetProcessing(false);
+      }
     } catch (error) {
       toast.error(`Error uploading PDF: ${error.message}`);
     }
@@ -90,11 +108,23 @@ const Header = () => {
               </p>
             )}
 
-            {pdfFile && <button
+            {showSubmit && <button
               onClick={handlePDFUpload}
               className="mt-2 px-6 py-2 bg-indigo-600 text-white font-semibold rounded-full shadow hover:bg-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Submit
+            </button>}
+            {processing && <button
+              disabled
+              className="mt-2 px-6 py-2 bg-indigo-600 text-white font-semibold rounded-full shadow hover:bg-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Questions Generating
+            </button>}
+            {showTest && <button
+              onClick={() => navigate('/test')}
+              className="mt-2 px-6 py-2 bg-indigo-600 text-white font-semibold rounded-full shadow hover:bg-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Start Test
             </button>}
           </div>
         </div>
