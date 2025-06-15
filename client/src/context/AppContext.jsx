@@ -9,9 +9,10 @@ export const AppContext = createContext()
 const AppContextProvider = (props)=>{
     const [isGenerated, setIsGenerated] = useState(false)
     const [qaList, setQAList] = useState(null)
+    const [results, setResults] = useState([])
     
     const value = {
-        isGenerated, setIsGenerated, qaList, setQAList
+        isGenerated, setIsGenerated, qaList, setQAList, results, setResults
     }
 
     return(
