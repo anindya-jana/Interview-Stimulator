@@ -30,7 +30,7 @@ const Test = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       captureAndSendFrame();
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -42,7 +42,12 @@ const Test = () => {
     if (!screenshot) return;
 
     try {
-      await axios.post(`${backendUrl}/api/cheat_detection`, { image: screenshot });
+      const res = await axios.post(`${backendUrl}/api/cheat_detection`, { image: screenshot });
+      const anomaly = res.data.anomaly;
+
+      if (anomaly !== "All clear") {
+        toast.error(`Anomaly detected: ${anomaly}`);
+      }
     } catch (err) {
       console.error("Cheat detection error", err.message);
     }
